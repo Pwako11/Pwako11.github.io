@@ -1,0 +1,89 @@
+---
+layout: post
+title:      "Validation, Error Messaging in Sinatra"
+date:       2020-09-01 12:28:46 +0000
+permalink:  validation_error_messaging_in_sinatra
+---
+
+
+
+
+Sinatra is a Ruby-based application framework used to create web applications. Sinatra offers a broad range of capabilies from writting simple one page applications to complex multi page applications. In the MVC architecture, Sinatra's validations start with setting validations on your models. 
+
+For my Sinatra portfolio project, I created an app based on an e-commerce site with three models: `dealerservices`, `user` and `user_items`. My validataions were sent on the user model where the `Username`, `email` and `password's data` were validated for presence. 
+
+```
+class User < ActiveRecord::Base
+    has_many :user_items 
+    has_many :dealer_services, through: :user_items
+
+    validates :username, presence: true
+    validates :email, presence: true
+    validates :password_digest, presence: true
+
+    has_secure_password
+
+end
+```
+
+
+In the user_item model comment and time were validated for presents. 
+
+
+```
+class UserItem < ActiveRecord::Base
+    belongs_to :user 
+    belongs_to :dealer_services 
+
+    validates :comment, presence: true
+    validates :time, presence: true
+
+end
+```
+
+So why use validations? Validations are used to ensure that only valid data is saved into your database. Model-level validations are the best way to ensure that only valid data is saved into your database. In my application the validations were used to ensure that no blank data was passed to the database. in the user model my validations were used to ensure there was data entered for `:username`, `:email` and `:password`. 
+
+In my `user_items` model, validations were used to ensure users provided data for `:comment` and `:time`. Validations being database agnostic, means they cannot be bypased by the applications user and for the developer, they provide an easy way to test and maintain through the use of helpers or your own custom built methods. 
+
+```
+if params[:comment].empty? || params[:time].empty?
+            flash[:error] = "Comment and Time field require an entry. Please provide your comment and enter a preferred time for your service"
+            id = params["dealer_services_id"].to_i
+            rerendor = "/dealerservices/#{(id)}/new"
+            redirect rerendor
+        end 
+```
+
+
+Validations are typically run before these commands are sent to the database. If any validations fail, the object will be marked as invalid and Active Record will not perform the INSERT or UPDATE operation. This avoids storing an invalid object in the database. You can choose to have specific validations run when an object is created, saved, or updated.
+using the create method tirggers validations and helps ensure that only valid objects are saved to the database. 
+
+` @newitem = UserItem.create(:user_id => current_user.id, :dealer_services_id => params["dealer_services_id"].to_i, :comment => params["comment"], :time => params["time"])`
+
+
+Active Record offers many pre-defined validation helpers that you can use directly inside your class definitions. These helpers provide common validation rules. Every time a validation fails, an error message is added to the object's errors collection, and this message is associated with the attribute being validated. Sinatra Flash is an awesome gem that allows you to pop up little messages alerting your users of important things, via some simple code in your Application_controller.rb file. This is very useful for things like displaying error messages if the user has filled out a form wrong, or displaying "success" messages if the user did something successfully like sign in, sign out, or submit a form.
+In my application flash was used to display error messages for incomplete forms. 
+
+Here's how to set it up!
+
+1. Install the gem by typing `gem install sinatra-flash` in your terminal.
+2. Require the gem in the top of your `application_controller.rb` file: `register Sinatra::Flash`
+3. Enable sessions by adding this line right after your requires in `application_controller.rb`: `enable :sessions`. (Sessions allow your browser a way to persist certain information.)
+
+
+Flash stores its messages as a hash. To make a new flash message appear, you need to set a new key-value pairing in your server.rb file. For example, in my application I added an error message on the user_item_controller.rb :
+
+`flash[:error] = "Comment and Time field require an entry. Please provide your comment and enter a preferred time for your service"`
+
+
+I then added a conditional statement in my `user-items` view:
+
+```
+<% if flash[:error] %>
+  <p class="error"><%= flash[:error] %></p>
+<% end  %>
+```
+
+This action triggered the assigned error message to the key value pair. 
+
+
