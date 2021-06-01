@@ -1,0 +1,71 @@
+I"�<p>Sinatra is a Ruby-based application framework used to create web applications. Sinatra offers a broad range of capabilies from writting simple one page applications to complex multi page applications. In the MVC architecture, Sinatra’s validations start with setting validations on your models.</p>
+
+<p>For my Sinatra portfolio project, I created an app based on an e-commerce site with three models: <code class="language-plaintext highlighter-rouge">dealerservices</code>, <code class="language-plaintext highlighter-rouge">user</code> and <code class="language-plaintext highlighter-rouge">user_items</code>. My validataions were sent on the user model where the <code class="language-plaintext highlighter-rouge">Username</code>, <code class="language-plaintext highlighter-rouge">email</code> and <code class="language-plaintext highlighter-rouge">password's data</code> were validated for presence.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class User &lt; ActiveRecord::Base
+    has_many :user_items 
+    has_many :dealer_services, through: :user_items
+
+    validates :username, presence: true
+    validates :email, presence: true
+    validates :password_digest, presence: true
+
+    has_secure_password
+
+end
+</code></pre></div></div>
+
+<p>In the user_item model comment and time were validated for presents.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class UserItem &lt; ActiveRecord::Base
+    belongs_to :user 
+    belongs_to :dealer_services 
+
+    validates :comment, presence: true
+    validates :time, presence: true
+
+end
+</code></pre></div></div>
+
+<p>So why use validations? Validations are used to ensure that only valid data is saved into your database. Model-level validations are the best way to ensure that only valid data is saved into your database. In my application the validations were used to ensure that no blank data was passed to the database. in the user model my validations were used to ensure there was data entered for <code class="language-plaintext highlighter-rouge">:username</code>, <code class="language-plaintext highlighter-rouge">:email</code> and <code class="language-plaintext highlighter-rouge">:password</code>.</p>
+
+<p>In my <code class="language-plaintext highlighter-rouge">user_items</code> model, validations were used to ensure users provided data for <code class="language-plaintext highlighter-rouge">:comment</code> and <code class="language-plaintext highlighter-rouge">:time</code>. Validations being database agnostic, means they cannot be bypased by the applications user and for the developer, they provide an easy way to test and maintain through the use of helpers or your own custom built methods.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if params[:comment].empty? || params[:time].empty?
+            flash[:error] = "Comment and Time field require an entry. Please provide your comment and enter a preferred time for your service"
+            id = params["dealer_services_id"].to_i
+            rerendor = "/dealerservices/#{(id)}/new"
+            redirect rerendor
+        end 
+</code></pre></div></div>
+
+<p>Validations are typically run before these commands are sent to the database. If any validations fail, the object will be marked as invalid and Active Record will not perform the INSERT or UPDATE operation. This avoids storing an invalid object in the database. You can choose to have specific validations run when an object is created, saved, or updated.
+using the create method tirggers validations and helps ensure that only valid objects are saved to the database.</p>
+
+<p>` @newitem = UserItem.create(:user_id =&gt; current_user.id, :dealer_services_id =&gt; params[“dealer_services_id”].to_i, :comment =&gt; params[“comment”], :time =&gt; params[“time”])`</p>
+
+<p>Active Record offers many pre-defined validation helpers that you can use directly inside your class definitions. These helpers provide common validation rules. Every time a validation fails, an error message is added to the object’s errors collection, and this message is associated with the attribute being validated. Sinatra Flash is an awesome gem that allows you to pop up little messages alerting your users of important things, via some simple code in your Application_controller.rb file. This is very useful for things like displaying error messages if the user has filled out a form wrong, or displaying “success” messages if the user did something successfully like sign in, sign out, or submit a form.
+In my application flash was used to display error messages for incomplete forms.</p>
+
+<p>Here’s how to set it up!</p>
+
+<ol>
+  <li>Install the gem by typing <code class="language-plaintext highlighter-rouge">gem install sinatra-flash</code> in your terminal.</li>
+  <li>Require the gem in the top of your <code class="language-plaintext highlighter-rouge">application_controller.rb</code> file: <code class="language-plaintext highlighter-rouge">register Sinatra::Flash</code></li>
+  <li>Enable sessions by adding this line right after your requires in <code class="language-plaintext highlighter-rouge">application_controller.rb</code>: <code class="language-plaintext highlighter-rouge">enable :sessions</code>. (Sessions allow your browser a way to persist certain information.)</li>
+</ol>
+
+<p>Flash stores its messages as a hash. To make a new flash message appear, you need to set a new key-value pairing in your server.rb file. For example, in my application I added an error message on the user_item_controller.rb :</p>
+
+<p><code class="language-plaintext highlighter-rouge">flash[:error] = "Comment and Time field require an entry. Please provide your comment and enter a preferred time for your service"</code></p>
+
+<p>I then added a conditional statement in my <code class="language-plaintext highlighter-rouge">user-items</code> view:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;% if flash[:error] %&gt;
+  &lt;p class="error"&gt;&lt;%= flash[:error] %&gt;&lt;/p&gt;
+&lt;% end  %&gt;
+</code></pre></div></div>
+
+<p>This action triggered the assigned error message to the key value pair.</p>
+
+:ET

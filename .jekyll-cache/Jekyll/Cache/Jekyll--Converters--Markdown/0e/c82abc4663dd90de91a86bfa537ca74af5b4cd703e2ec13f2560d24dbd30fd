@@ -1,0 +1,41 @@
+I"Y<p><code class="language-plaintext highlighter-rouge">form_tag</code> and <code class="language-plaintext highlighter-rouge">form_for</code> provide two very similiar interfaces to much of the same thing. Keeping with the DRY principle,  repetition is shunned upon and soon <code class="language-plaintext highlighter-rouge">form_tag</code> and <code class="language-plaintext highlighter-rouge">form_for</code> will be depricated and replaced with with <code class="language-plaintext highlighter-rouge">form_with</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">form_tag</code> is used to create forms where there is no underlying model.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;%= form_tag users_path do %&gt;
+  &lt;%= text_field_tag :email %&gt;
+  &lt;%= submit_tag %&gt;
+&lt;% end %&gt;
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">form_for</code> is used when you have model.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;%= form_for @user do |form| %&gt;
+  &lt;%= form.text_field :email %&gt;
+  &lt;%= form.submit %&gt;
+&lt;% end %&gt;
+</code></pre></div></div>
+
+<p>here is an example for <code class="language-plaintext highlighter-rouge">form_with</code> without a model.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;%= form_with url: users_path do |form| %&gt;
+  &lt;%= form.text_field :email %&gt;
+  &lt;%= form.submit %&gt;
+&lt;% end %&gt;
+</code></pre></div></div>
+
+<p>Here is an example with a model</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;%= form_with model: @user do |form| %&gt;
+  &lt;%= form.text_field :email %&gt;
+  &lt;%= form.submit %&gt;
+&lt;% end %&gt;
+</code></pre></div></div>
+
+<p>Setting the <code class="language-plaintext highlighter-rouge">model</code> argument then <code class="language-plaintext highlighter-rouge">scope</code> and <code class="language-plaintext highlighter-rouge">url</code> are automatically derived from it. this pattern is derived from  <code class="language-plaintext highlighter-rouge">form_for</code>.</p>
+
+<p>The diffference in syntax between the two examples provided above is that <code class="language-plaintext highlighter-rouge">form_for</code> uses form builder helpers making <code class="language-plaintext highlighter-rouge">form_tag</code> a little more efficient in regards to the amount of code required to complete a form. <code class="language-plaintext highlighter-rouge">form_with</code> will provide form builders.</p>
+
+<p>The unification of usage and subsequent calls to field tags will simplify how you build your forms. Additionally, from_with solves some deficiencies with the current helpers.</p>
+
+:ET

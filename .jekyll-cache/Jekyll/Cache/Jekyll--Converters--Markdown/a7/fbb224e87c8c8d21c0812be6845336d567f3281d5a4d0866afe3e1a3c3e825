@@ -1,0 +1,2 @@
+I"<p><code class="language-plaintext highlighter-rouge">form_tag</code> and <code class="language-plaintext highlighter-rouge">form_for</code> provide two very similiar interfaces to much of the same thing. Keeping with the DRY principle,  repetition is shunned upon and soon <code class="language-plaintext highlighter-rouge">form_tag</code> and <code class="language-plaintext highlighter-rouge">form_for</code> will be depricated and replaced with with <code class="language-plaintext highlighter-rouge">form_with</code>.</p>
+:ET
