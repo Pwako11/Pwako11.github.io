@@ -1,11 +1,11 @@
 # Site settings
 author: Patrick Akolo 
-title: Why Software Engineering?
+title: Software Engineering
 header-img: img/home-bg.png
 email: akolo@hotmail.com
 copyright_name: Patrick Akolo 
 description: > # this means to ignore newlines until "baseurl:"
-  First Blog 
+  Patrick's Blog spot 
 baseurl: "" # the subpath of your site, e.g. /blog
 twitter_username: 
 github_username:  Pwako11
