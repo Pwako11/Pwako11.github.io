@@ -1,0 +1,115 @@
+I"<h1 id="lifecycle-methods">Lifecycle Methods</h1>
+<p>React lets you define components as classes or functions. Components defined as classes provide more features. Some of these features inlcude methods that are a hook into the lifecycle of a react component. they can be used in ES6 class components, but not in functional stateless components. Each component has several “lifecycle methods” that you can override to run code at particular times in the process. The lifecyle methods are categorized in three main processes: <code class="language-plaintext highlighter-rouge">Mounting</code>, <code class="language-plaintext highlighter-rouge">Updating</code> and <code class="language-plaintext highlighter-rouge">Unmounting</code>.</p>
+
+<h2 id="mounting">Mounting</h2>
+<p>During the <code class="language-plaintext highlighter-rouge">Mounting</code> process, an instance of the component is created and insterted in the DOM. The methods in this process are called in a specific order:</p>
+<h4 id="constructor">constructor()</h4>
+<h4 id="componentwillmount">componentWillMount()</h4>
+<h4 id="render">render()</h4>
+<h4 id="componentdidmount">componentDidMount()</h4>
+<p>The <code class="language-plaintext highlighter-rouge">constructor()</code> is called first, <code class="language-plaintext highlighter-rouge">componentWillMount()</code> gets called before the <code class="language-plaintext highlighter-rouge">render()</code> method and <code class="language-plaintext highlighter-rouge">componentDidMount()</code> is called after the render method.</p>
+
+<h2 id="updating">Updating</h2>
+<p>During the <code class="language-plaintext highlighter-rouge">Update</code> process the methods in this lifecycle are called when the state or the props in a component change. the methods in this process are called in the following order:</p>
+<h4 id="static-getderivedstatefromprops">static getDerivedStateFromProps()</h4>
+<h4 id="shouldcomponentupdate">shouldComponentUpdate()</h4>
+<h4 id="render-1">render()</h4>
+<h4 id="componentdidupdate">componentDidUpdate()</h4>
+<p><code class="language-plaintext highlighter-rouge">render()</code> lifecycle method is mandatory and returns the elements as an output of teh component. This lifecycle event gets and input as props and state and returns an element. <code class="language-plaintext highlighter-rouge">shouldComponentUpdate()</code> is called when component updates due to state changes. <code class="language-plaintext highlighter-rouge">componentDidUpdate()</code> is used to perform further asynchronous requests.</p>
+
+<h2 id="unmounting">Unmounting.</h2>
+<p>Unmounting lifecycle, has only one lifecycle method: <code class="language-plaintext highlighter-rouge">componentWillUnmount()</code>. This method is called before your component is destroyed. This method is used to component clean up tasks.</p>
+
+<h1 id="adding-lifecycle-methods-to-a-class">Adding Lifecycle Methods to a Class</h1>
+
+<p>In complex/manture React applications with many components, it is very important to optimize your applications performance by freeing up resources taken by components when they are destroyed.</p>
+
+<p>In this example we will look will <code class="language-plaintext highlighter-rouge">mount</code> a clock and <code class="language-plaintext highlighter-rouge">unmount</code> the clock as we clear the timer.</p>
+
+<p>here we are declaring special methods on the component class to run some code when a component mounts and unmounts:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  componentDidMount() {
+  }
+
+  componentWillUnmount() {
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;Hello, world!&lt;/h1&gt;
+        &lt;h2&gt;It is {this.state.date.toLocaleTimeString()}.&lt;/h2&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">omponentDidMount()</code>method runs after the component output has been rendered to the DOM. This is a good place to set up a timer:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>componentDidMount() {
+    this.timerID = setInterval(
+      () =&gt; this.tick(),
+      1000
+    );
+  }
+</code></pre></div></div>
+
+<p>While this.props is set up by React itself and this.state has a special meaning, you are free to add additional fields to the class manually if you need to store something that doesn’t participate in the data flow (like a timer ID).</p>
+
+<p>We will tear down the timer in the componentWillUnmount() lifecycle method:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+</code></pre></div></div>
+
+<p>Finally, we will implement a method called tick() that the Clock component will run every second.</p>
+
+<p>It will use this.setState() to schedule updates to the component local state:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(
+      () =&gt; this.tick(),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    this.setState({
+      date: new Date()
+    });
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;Hello, world!&lt;/h1&gt;
+        &lt;h2&gt;It is {this.state.date.toLocaleTimeString()}.&lt;/h2&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+ReactDOM.render(
+  &lt;Clock /&gt;,
+  document.getElementById('root')
+);
+</code></pre></div></div>
+:ET
