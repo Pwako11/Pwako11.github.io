@@ -3,9 +3,7 @@ layout: post
 title:      "What’s Your Learning Style?"
 date:       2021-09-10 10:03:52 +0000
 permalink:  Whats_Your_Learning_Style 
----
-
-# What’s Your Learning Style? 
+--- 
 
 My time at coding bootcamp is coming to an end. As with everything I undertake, this signals a time for me to take stock of my experience, my achievements and "learnings". 
 
